@@ -77,8 +77,5 @@ return new class extends Migration
         Schema::dropIfExists('readers');
         Schema::dropIfExists('offences');
         Schema::dropIfExists('typebook');
-
-
-
     }
 };
