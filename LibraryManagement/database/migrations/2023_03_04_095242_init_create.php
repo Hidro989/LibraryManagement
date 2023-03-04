@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('address');
         });
 
-        Schema::create('loadcards', function (Blueprint $table) {
+        Schema::create('loancards', function (Blueprint $table) {
             $table->id();
             $table->integer('idBook');
             $table->integer('idStaff');
@@ -71,5 +71,14 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('admins');
+        Schema::dropIfExists('books');
+        Schema::dropIfExists('staffs');
+        Schema::dropIfExists('loancards');
+        Schema::dropIfExists('readers');
+        Schema::dropIfExists('offences');
+        Schema::dropIfExists('typebook');
+
+
+
     }
 };
