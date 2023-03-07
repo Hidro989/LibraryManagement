@@ -1,4 +1,5 @@
 <?php
+
 use App\Http\Controllers\AdminController;
 use App\Http\Middleware\Authenticate;
 use App\Http\Controllers\BookController;
@@ -17,8 +18,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 
+
 Route::resource('book', BookController::class);
 Route::resource('type', TypeBookController::class);
+
 Route::middleware('isLoggedin')->group(function () {
     Route::get("", [AdminController::class, 'index'])->name('dashboard');
     Route::get("logout", [AdminController::class, 'logout'])->name('logout');
