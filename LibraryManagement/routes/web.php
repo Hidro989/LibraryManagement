@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\AdminController;
+use App\Http\Middleware\Authenticate;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +15,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('admin.auth.login');
+Route::middleware('isLoggedin')->group(function () {
+    Route::get("", [AdminController::class, 'index'])->name('dashboard');
+    Route::get("logout", [AdminController::class, 'logout'])->name('logout');
 });
+Route::get('login', [AdminController::class, 'showLogin'])->name('login')->middleware('alreadyLoggedIn');
+Route::post('login', [AdminController::class, 'login'])->name('login');
+Route::get('page404', [AdminController::class, 'page404'])->name('page404');
