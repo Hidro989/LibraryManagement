@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\BookController;
+use App\Http\Controllers\TypeBookController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +15,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('admin.auth.login');
-});
+// Route::get('/', function () {
+//     return view('admin.auth.login');
+// });
+
+Route::resource('book', BookController::class);
+Route::resource('type', TypeBookController::class);
