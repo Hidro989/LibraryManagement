@@ -2,95 +2,141 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Admins;
+use App\Models\Book;
+use App\Models\Staffs;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\View;
 
 class AdminController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         return view('admin.index');
     }
 
-    public function showLogin() {
-        return view('auth.login');
+    public function staffManagement() {
+        $staffs = Staffs::all()->lazy();
+        return view('admin.staff.staffManagement', compact('staffs'));
     }
 
-    public function login(Request $request) {
+    public function addStaff() {
+        return view('admin.staff.addStaff');
+    }
+
+    public function saveAddStaff(Request $request)
+    {
+        $name = $request->input('name');
         $username = $request->input('username');
         $password = $request->input('password');
+        $gender = $request->input('gender') ? $request->input('gender') : 'Nam';
+        $phone = $request->input('phone') ? $request->input('phone') : '';
+        $address = $request->input('address') ? $request->input('address') : '';
+
+        $request->validate(
+            [
+                'name' => 'required',
+                'username' => 'required',
+                'password' => 'required',
+            ],
+            [
+                'name.required' => "Họ và tên chưa được nhập",
+                'username.required' => "Tài khoản chưa được nhập",
+                'password.required' => "Mật khẩu chưa được nhập",
+            ]
+        );
 
         try {
-            $admin = Admins::where('username', $username)->where('password', $password)->first();
-            if ($admin) {
-                // Nếu đăng nhập thành công, chuyển hướng đến trang dashboard
-                $request->session()->put('loginId', $admin);
-                return redirect()->route('dashboard');
+            $staff = Staffs::where('username', $username)->first();
+            if ($staff) {
+                return redirect()->back()->withErrors(['username' => 'Tài khoản đã có']);
             }
+            Staffs::insert([
+                'name' => $name,
+                'username' => $username,
+                'password' => $password,
+                'gender' => $gender == "Nam" ? 1 : 0,
+                'phone' => $phone,
+                'address' => $address
+            ]);
+            return redirect()->route('admin.staff-management')->with(['message' => 'Thêm mới thành công']);
         } catch (\Throwable $th) {
-            return redirect()->route('page404');
+            return redirect()->back()->withErrors(['message' => 'Thêm mới thất bại']);
         }
-
-        // Nếu đăng nhập không thành công, trả về trang đăng nhập và hiển thị thông báo lỗi
-        return redirect()->back()->withErrors(['username' => 'Tài khoản hoặc mật khẩu không đúng']);
     }
 
-    public function logout(Request $request) {
-        $request->session()->pull('loginId');
-        return redirect()->route('login');
-    }
-
-    public function page404() {
-        return view('error.page404');
-    }
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function editStaff(Request $request)
     {
-        //
+        $staff = Staffs::where("username", $request->all()['username'])->first();
+        return view('admin.staff.editStaff', compact('staff'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function saveEditStaff(Request $request)
     {
-        //
+        $name = $request->input('name');
+        $username = $request->input('username');
+        $password = $request->input('password');
+        $gender = $request->input('gender') ? $request->input('gender') : 'Nam';
+        $phone = $request->input('phone') ? $request->input('phone') : '';
+        $address = $request->input('address') ? $request->input('address') : '';
+
+
+        $newStaff = $request->validate(
+            [
+                'name' => 'required',
+                'username' => 'required',
+                'password' => 'required',
+                'gender' => 'nullable',
+                'phone' => 'nullable',
+                'address' => 'nullable'
+            ],
+            [
+                'name.required' => "Họ và tên chưa được nhập",
+                'username.required' => "Tài khoản chưa được nhập",
+                'password.required' => "Mật khẩu chưa được nhập",
+            ]
+        );
+
+        try {
+            $oldStaff = Staffs::where('username', $username)->first();
+            if (!$oldStaff) {
+                Staffs::insert([
+                    'name' => $name,
+                    'username' => $username,
+                    'password' => $password,
+                    'gender' => $gender == "Nam" ? 1 : 0,
+                    'phone' => $phone,
+                    'address' => $address
+                ]);
+                return redirect()->route('admin.staff-management')->with(['message' => 'Thêm mới thành công']);
+            }
+            Staffs::where('username', $username)->update(
+                [
+                    'name' => $name,
+                    'username' => $username,
+                    'password' => $password,
+                    'gender' => $gender == "Nam" ? 1 : 0,
+                    'phone' => $phone,
+                    'address' => $address
+                ]
+            );
+            return redirect()->route('admin.staff-management')->with(['message' => 'Sửa thành công']);
+        } catch (\Throwable $th) {
+            return redirect()->back()->withErrors(['message' => 'Sửa thất bại']);
+        }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
+    public function deleteStaff(String $username) {
+        try {
+            Staffs::where('username', $username)->delete();
+            return redirect()->route('admin.staff-management')->with(['message' => 'Xóa thành công']);
+        } catch (\Throwable $th) {
+            return redirect()->back()->withErrors(['message' => 'Xóa thất bại']);
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+    public function statisticalAllBook() {
+        $borrowedBook = Book::where('status', 1)->count();
+        $remainingBook = Book::where('status', 0)->count();
+        return View::make('admin.statistical')->with(compact('borrowedBook'))->with(compact('remainingBook'));
     }
 }

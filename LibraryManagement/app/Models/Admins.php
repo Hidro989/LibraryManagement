@@ -8,16 +8,12 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class Admins extends Authenticatable
 {
     use HasFactory;
+    public $timestamps = false;
 
     protected $fillable = [
         'username', 'password'
     ];
 
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
     protected $hidden = [
         'password'
     ];
