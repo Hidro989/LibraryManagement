@@ -430,14 +430,31 @@
                                 <span>Quản lý nhân viên</span>
                             </a>
                         </li>
-
                         <li>
-                            <a href="javascript: void(0);" class="waves-effect">
+                            <a href="{{ route('loancard.index') }}" class="waves-effect">
+                                <i class="bx bxs-book"></i>
+                                <span>Quản lý thẻ mượn</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('type.index') }}" class="waves-effect">
+                                <i class="bx bxs-book"></i>
+                                <span>Quản lý thể loại</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('book.index') }}" class="waves-effect">
                                 <i class="bx bxs-book"></i>
                                 <span>Quản lý sách</span>
                             </a>
                         </li>
-
+                        <li>
+                            <a href="{{ route('reader.index') }}" class="waves-effect">
+                                <i class="bx bxs-book"></i>
+                                <span>Quản lý đọc giả</span>
+                            </a>
+                        </li>
+                        
                         <li>
                             <a href="{{ route('admin.statistical') }}" class=" waves-effect">
                                 <i class="bx bx-file"></i>
