@@ -1,6 +1,6 @@
 
 @extends('layouts.app')
-            @section('title', 'Thêm thể loại')
+            @section('title', 'Sửa sách')
 
             @section('content')
                 <!-- ========== Left Sidebar Start ========== -->
@@ -324,12 +324,12 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="page-title-box d-flex align-items-center justify-content-between">
-                                    <h4 class="mb-0 font-size-18">Thêm thể loại</h4>
+                                    <h4 class="mb-0 font-size-18">Sửa sách</h4>
 
                                     <div class="page-title-right">
                                         <ol class="breadcrumb m-0">
-                                            <li class="breadcrumb-item"><a href="javascript: void(0);">Quản lý thể loại</a></li>
-                                            <li class="breadcrumb-item active">Thêm thể loại</li>
+                                            <li class="breadcrumb-item"><a href="javascript: void(0);">Quản lý sách</a></li>
+                                            <li class="breadcrumb-item active">Sửa sách</li>
                                         </ol>
                                     </div>
 
@@ -341,19 +341,52 @@
                             <div class="col-lg-12">
                                 <div class="card">
                                     <div class="card-body">
-                                        <h4 class="card-title mb-4">Thêm thể loại</h4>
+                                        <h4 class="card-title mb-4">Sửa sách</h4>
                                         @include('common.errors')
-                                        
-                                        <form class="outer-repeater" action="{{route('type.store')}}" method="POST">
+                                       
+                                        <form class="outer-repeater" action="{{route('book.update', $book->isbn)}}" method="POST">
+                                            @method('PUT')
                                             @csrf
+                                            
                                             <div  class="outer">
                                                 <div  class="outer">
-                                                    
-                                                    <div class="form-group">
-                                                        <label for="typename">Tên thể loại</label>
-                                                        <input type="text" class="form-control" id="typename" name="typename" placeholder="Nhập thể loại...">
+                                                    <div class="form-group" hidden>
+                                                        <label for="isbn">ISBN</label>
+                                                        <input type="text" class="form-control" id="isbn" name="isbn" placeholder="Nhập mã ISBN..." value="{{$book->isbn}}">
                                                     </div>
-                                                    
+                                                
+                                                    <div class="form-group">
+                                                        <label for="bookname">Tên sách</label>
+                                                        <input type="text" class="form-control" id="bookname" name="bookname" placeholder="Nhập tên sách..." value="{{$book->name}}">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="formrow-inputState">Thể loại</label>
+                                                        <select id="formrow-inputState" class="form-control" name="typebook">
+                                                            <option>Chọn thể loại...</option>
+                                                            @if (!empty($types))
+                                                                @foreach ($types as $type)
+                                                                    @if ($type->id == $book->idTypeBook)
+                                                                    <option selected value="{{$type->id}}">{{$type->name}}</option>
+                                                                    @else
+                                                                    <option value="{{$type->id}}">{{$type->name}}</option>
+                                                                    @endif
+                                                                
+                                                                @endforeach
+                                                            @endif
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="author">Tác giả</label>
+                                                        <input type="text" class="form-control" id="author" name="author" placeholder="Nhập tên tác giả..." value="{{$book->author}}">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="publisher">Nhà xuất bản</label>
+                                                        <input type="text" class="form-control" id="publisher" name="publisher" placeholder="Nhập tên nhà xuất bản..." value="{{$book->publisher}}">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="number-input">Năm xuất bản</label>
+                                                        <input class="form-control" type="number" min="1990"  value="{{$book->publishingYear}}" id="number-input" name="publisingYear">
+                                                    </div>
                                                     <button type="submit" class="btn btn-primary">Chấp nhận</button>
                                                 </div>
                                             </div>

@@ -46,13 +46,13 @@ return new class extends Migration
             $table->boolean('status');
         });
 
-        Schema::create('typebook', function (Blueprint $table) {
+        Schema::create('typebooks', function (Blueprint $table) {
             $table->id();
             $table->string('name');
         });
 
         Schema::create('readers', function (Blueprint $table) {
-            $table->string('cmnd')->primary();
+            $table->integer('cmnd')->primary();
             $table->string('name');
             $table->string('address');
         });
@@ -76,6 +76,6 @@ return new class extends Migration
         Schema::dropIfExists('loancards');
         Schema::dropIfExists('readers');
         Schema::dropIfExists('offences');
-        Schema::dropIfExists('typebook');
+        Schema::dropIfExists('typebooks');
     }
 };

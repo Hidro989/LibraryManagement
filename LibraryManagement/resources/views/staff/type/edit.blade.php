@@ -1,6 +1,6 @@
 
 @extends('layouts.app')
-            @section('title', 'Thêm thể loại')
+            @section('title', 'Sửa thể loại')
 
             @section('content')
                 <!-- ========== Left Sidebar Start ========== -->
@@ -343,15 +343,15 @@
                                     <div class="card-body">
                                         <h4 class="card-title mb-4">Thêm thể loại</h4>
                                         @include('common.errors')
-                                        
-                                        <form class="outer-repeater" action="{{route('type.store')}}" method="POST">
+                                        <form class="outer-repeater" action="{{route('type.update',$type->id)}}" method="POST">
                                             @csrf
+                                            {{ method_field('PUT') }}
                                             <div  class="outer">
                                                 <div  class="outer">
                                                     
                                                     <div class="form-group">
                                                         <label for="typename">Tên thể loại</label>
-                                                        <input type="text" class="form-control" id="typename" name="typename" placeholder="Nhập thể loại...">
+                                                        <input type="text" class="form-control" id="typename" name="typename" placeholder="Nhập thể loại..." value="{{$type->name}}">
                                                     </div>
                                                     
                                                     <button type="submit" class="btn btn-primary">Chấp nhận</button>

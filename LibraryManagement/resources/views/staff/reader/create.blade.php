@@ -1,6 +1,6 @@
-
+﻿
 @extends('layouts.app')
-            @section('title', 'Thêm thể loại')
+            @section('title', 'Thêm đọc giả')
 
             @section('content')
                 <!-- ========== Left Sidebar Start ========== -->
@@ -324,12 +324,12 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="page-title-box d-flex align-items-center justify-content-between">
-                                    <h4 class="mb-0 font-size-18">Thêm thể loại</h4>
+                                    <h4 class="mb-0 font-size-18">Thêm đọc giả</h4>
 
                                     <div class="page-title-right">
                                         <ol class="breadcrumb m-0">
-                                            <li class="breadcrumb-item"><a href="javascript: void(0);">Quản lý thể loại</a></li>
-                                            <li class="breadcrumb-item active">Thêm thể loại</li>
+                                            <li class="breadcrumb-item"><a href="javascript: void(0);">Quản lý đọc giả</a></li>
+                                            <li class="breadcrumb-item active">Thêm đọc giả</li>
                                         </ol>
                                     </div>
 
@@ -341,17 +341,26 @@
                             <div class="col-lg-12">
                                 <div class="card">
                                     <div class="card-body">
-                                        <h4 class="card-title mb-4">Thêm thể loại</h4>
+                                        <h4 class="card-title mb-4">Thêm đọc giả</h4>
                                         @include('common.errors')
-                                        
-                                        <form class="outer-repeater" action="{{route('type.store')}}" method="POST">
+                                       
+                                        <form class="outer-repeater" action="{{route('reader.store')}}" method="POST">
                                             @csrf
                                             <div  class="outer">
                                                 <div  class="outer">
                                                     
                                                     <div class="form-group">
-                                                        <label for="typename">Tên thể loại</label>
-                                                        <input type="text" class="form-control" id="typename" name="typename" placeholder="Nhập thể loại...">
+                                                        <label for="cmnd">CMND</label>
+                                                        <input type="number" class="form-control" id="cmnd" name="cmnd" placeholder="Nhập CMND...">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="name">Tên đọc giả</label>
+                                                        <input type="text" class="form-control" id="name" name="name" placeholder="Nhập tên đọc giả...">
+                                                    </div>
+                                                    
+                                                    <div class="form-group">
+                                                        <label for="address">Địa chỉ</label>
+                                                        <input type="text" class="form-control" id="address" name="address" placeholder="Nhập địa chỉ...">
                                                     </div>
                                                     
                                                     <button type="submit" class="btn btn-primary">Chấp nhận</button>
