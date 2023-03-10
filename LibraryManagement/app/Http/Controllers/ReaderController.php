@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Book;
 use App\Models\LoanCard;
 use App\Models\Reader;
 use Exception;
@@ -49,7 +50,7 @@ class ReaderController extends Controller
             return redirect()->route('reader.create')->withInput()->withErrors($validator);
         }
 
-        
+
 
         $reader = new Reader();
         $reader->cmnd = $request->input('cmnd');
@@ -61,7 +62,7 @@ class ReaderController extends Controller
         }catch(Exception $e){
             return back()->withInput()->withErrors($e->getMessage());
         }
-        
+
         return redirect()->route('reader.index')
         ->with('success', 'Thêm đọc giả thành công');
     }
@@ -126,16 +127,23 @@ class ReaderController extends Controller
      */
     public function destroy(string $cmnd)
     {
-        $reader = Reader::where('cmnd', $cmnd)->first();
-        if(!is_null($reader)){
-            $loancard = LoanCard::where('cmndReader', $cmnd)->first();
-            if(!is_null($loancard)){
-                $loancard->delete();
+        try {
+            $reader = Reader::where('cmnd', $cmnd)->first();
+            if (!is_null($reader)) {
+                $loancards = LoanCard::where('cmndReader', $cmnd)->get();
+                if (!is_null($loancards)) {
+                    foreach ($loancards as $key => $loancard) {
+                        Book::where("isbn", $loancard->idBook)->update(['status' => 0]);
+                        $loancard->delete();
+                    }
+                }
+                $reader->delete();
             }
-            $reader->delete();
+        } catch (\Throwable $th) {
+            return back()->withErrors("Xóa người đọc thất bại");
         }
-        
+
         return back();
-        
+
     }
 }

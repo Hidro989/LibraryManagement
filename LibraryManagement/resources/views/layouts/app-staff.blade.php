@@ -92,29 +92,38 @@
                         <li class="menu-title">Menu</li>
 
                         <li>
-                            <a href="{{ route('dashboard') }}" class="waves-effect">
+                            <a href="{{ route('home') }}" class="waves-effect">
                                 <i class="bx bx-home-circle"></i>
                                 <span>Trang chủ</span>
                             </a>
                         </li>
-
                         <li>
-                            <a href="{{ route('admin.staff-management') }}" class="waves-effect">
-                                <i class="bx bxs-user-detail"></i>
-                                <span>Quản lý nhân viên</span>
+                            <a href="{{ route('loancard.index') }}" class="waves-effect">
+                                <i class="bx bxs-card"></i>
+                                <span>Quản lý thẻ mượn</span>
                             </a>
                         </li>
-
                         <li>
-                            <a href="{{ route('admin.statistical') }}" class=" waves-effect">
-                                <i class="bx bx-file"></i>
-                                <span>Thống kê</span>
+                            <a href="{{ route('type.index') }}" class="waves-effect">
+                                <i class="bx bxs-book"></i>
+                                <span>Quản lý thể loại</span>
                             </a>
                         </li>
-
                         <li>
-                            <a href="{{ route('admin.change-password') }}" class=" waves-effect">
-                                <i class="bx bx-file"></i>
+                            <a href="{{ route('book.index') }}" class="waves-effect">
+                                <i class="bx bxs-book"></i>
+                                <span>Quản lý sách</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('reader.index') }}" class="waves-effect">
+                                <i class="bx bxs-book"></i>
+                                <span>Quản lý đọc giả</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('staff.change-password') }}" class=" waves-effect">
+                                <i class="bx bx-lock"></i>
                                 <span>Đổi mật khẩu</span>
                             </a>
                         </li>
@@ -127,7 +136,6 @@
 
         @yield('content')
     </div>
-    <!-- /Right-bar -->
 
     <!-- Right bar overlay-->
     <div class="rightbar-overlay"></div>

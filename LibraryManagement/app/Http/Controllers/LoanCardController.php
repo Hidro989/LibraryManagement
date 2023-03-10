@@ -19,7 +19,7 @@ class LoanCardController extends Controller
     {
         $loancards = LoanCard::paginate(10);
         $readers = Reader::all();
-        $books = Book::where('status', 1)->get();
+        $books = Book::all();
 
         return view('staff.loancard.index', compact('loancards', 'readers', 'books'));
     }
@@ -28,7 +28,7 @@ class LoanCardController extends Controller
      * Show the form for creating a new resource.
      */
     public function create()
-    {   
+    {
         $books = Book::where('status', 0)->get();
         $readers = Reader::all();
         return view('staff.loancard.create', compact('books', 'readers'));
@@ -56,7 +56,7 @@ class LoanCardController extends Controller
         $book = Book::where('isbn', $request->input('book'))->first();
         if(!is_null($book)){
             $book->status = 1;
-            $book->save();   
+            $book->save();
         }
 
         $loancard = new LoanCard();
@@ -67,8 +67,12 @@ class LoanCardController extends Controller
         $loancard->cmndReader = $request->input('reader');
         $loancard->status = 0;
         $loancard->idStaff = 1;
-        $loancard->save();
-        return redirect()->route('loancard.index');
+        try {
+            $loancard->save();
+            return redirect()->route('loancard.index');
+        } catch (\Throwable $th) {
+            return back()->withErrors("Tạo thẻ mượn không thành công");
+        }
     }
 
     /**
@@ -81,7 +85,13 @@ class LoanCardController extends Controller
             return redirect('/404');
         }
         $loancard->status = 1;
-        $loancard->save();
+        try {
+            Book::where("isbn", $loancard->idBook)->update(['status' => 0]);
+            $loancard->save();
+        } catch (\Throwable $th) {
+            return back()->withErrors("Trả sách không thành công");
+        }
+
         return redirect()->route('loancard.index');
     }
 
@@ -89,7 +99,7 @@ class LoanCardController extends Controller
      * Show the form for editing the specified resource.
      */
     public function edit(string $id)
-    {   
+    {
         $loancard = LoanCard::findOrFail($id);
         if(is_null($loancard)){
             return redirect('/404');
@@ -137,7 +147,14 @@ class LoanCardController extends Controller
      */
     public function destroy(string $id)
     {
-        LoanCard::findOrFail($id)->delete();
+        try {
+            $loancard = LoanCard::findOrFail($id);
+            Book::where("isbn", $loancard->idBook)->update(['status' => 0]);
+            LoanCard::findOrFail($id)->delete();
+        } catch (\Throwable $th) {
+            return back()->withErrors("Trả sách không thành công");
+        }
+
         return redirect()->route('loancard.index');
     }
 }

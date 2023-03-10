@@ -20,7 +20,7 @@ class BookController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {   
+    {
         $books = Book::paginate(10);
         $types = typebook::all();
         return view('staff.book.index', compact('books', 'types'));
@@ -30,7 +30,7 @@ class BookController extends Controller
      * Show the form for creating a new resource.
      */
     public function create()
-    {   
+    {
         $types = Typebook::all();
         return view('staff.book.create', compact('types'));
     }
@@ -41,7 +41,7 @@ class BookController extends Controller
     public function store(Request $request)
     {
         $validator =  $this->customRule($request);
-        
+
         // var_dump($request->all());
         // exit();
         if ($validator->fails()) {
@@ -49,7 +49,7 @@ class BookController extends Controller
                 ->withInput()
                 ->withErrors($validator );
         }
-        
+
         $book = new Book();
         $book->isbn = $request->input('isbn');
         $book->name = $request->input('bookname');
@@ -68,10 +68,10 @@ class BookController extends Controller
         }
         return redirect()->route('book.index');
     }
-    
+
     // Custom validator rule, message, attribute
-    private function customRule($request) : ValidationValidator 
-    {   
+    private function customRule($request) : ValidationValidator
+    {
         $validator = Validator::make($request->all(), [
             'isbn' => 'required|max:255',
             'bookname' => 'required|max:255',
@@ -89,7 +89,7 @@ class BookController extends Controller
             'author' => 'Vui lòng nhập trường :attribute',
             'publisher' => 'Vui lòng nhập trường :attribute',
             'publishingYear' => 'Vui lòng nhập trường :attribute',
-            
+
         ],
         [
             'bookname' => 'Tên sách',
@@ -114,13 +114,13 @@ class BookController extends Controller
      * Show the form for editing the specified resource.
      */
     public function edit(string $isbn)
-    {   
+    {
         $book = Book::where('isbn', $isbn)->first();
         $types = Typebook::all();
         if(is_null($book) || is_null($types)){
             return redirect('/404');
         }
-        
+
         return view('staff.book.edit', compact('book', 'types'));
     }
 
@@ -130,7 +130,7 @@ class BookController extends Controller
     public function update(Request $request, string $isbn)
     {
         $validator =  $this->customRule($request);
-        
+
 
         if ($validator->fails()) {
             return redirect('/book/'.$isbn)
@@ -158,16 +158,19 @@ class BookController extends Controller
      */
     public function destroy(string $isbn)
     {
-        $book = Book::where('isbn', $isbn)->first();
-        if(is_null($book)){
-            return redirect('/404');
-        }else{
-            $loancard = LoanCard::where('idBook', $isbn)->first();
-
-            if(!is_null($loancard)){
-                $loancard->delete();
+        try {
+            $book = Book::where('isbn', $isbn)->first();
+            if (!is_null($book)) {
+                $loancards = LoanCard::where('idBook', $isbn)->get();
+                if (!is_null($loancards)) {
+                    foreach ($loancards as $key => $loancard) {
+                        $loancard->delete();
+                    }
+                }
+                $book->delete();
             }
-            $book->delete();
+        } catch (\Throwable $th) {
+            return back()->withErrors("Xóa sách không thành công");
         }
 
         return back();

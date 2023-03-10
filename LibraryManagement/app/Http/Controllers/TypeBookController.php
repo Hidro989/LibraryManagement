@@ -16,7 +16,7 @@ class TypeBookController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {   
+    {
         $types = typebook::paginate(10);
         return view('staff.type.index', compact('types'));
     }
@@ -33,22 +33,22 @@ class TypeBookController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {   
+    {
         $validator = Validator::make($request->all(), [
             'typename' => 'required|max:255',
         ],
         [
             'typename.required' => 'Vui lòng nhập trường tên thể loại'
         ]);
-        
-     
+
+
         if ($validator->fails()) {
             return redirect('/type/create')
                 ->withInput()
                 ->withErrors($validator);
         }
-        
-        
+
+
         $type = typebook::create(['name' =>  $request->input('typename')]);
         $type->save();
         return redirect()->route('type.index')
@@ -67,12 +67,12 @@ class TypeBookController extends Controller
      * Show the form for editing the specified resource.
      */
     public function edit(string $id)
-    {   
+    {
         $type = typebook::findOrFail($id);
         if(is_null($type)){
             return redirect('/404');
         }
-        
+
         return view('staff.type.edit', compact('type'));
     }
 
@@ -91,15 +91,15 @@ class TypeBookController extends Controller
         [
             'typename.required' => 'Vui lòng nhập trường tên thể loại'
         ]);
-        
-     
+
+
         if ($validator->fails()) {
             return redirect('/type/'.$id)
                 ->withInput()
                 ->withErrors($validator);
         }
 
-        
+
         $type->name = $request->input('typename');
         $type->save();
 
@@ -112,23 +112,26 @@ class TypeBookController extends Controller
      */
     public function destroy(string $id)
     {
-        $type = typebook::findOrFail($id);
-        if(is_null($type)){
-            return redirect('/404');
-        }else{
-            $book = Book::where('idTypeBook', $id)->first();
+        try {
+            $type = typebook::findOrFail($id);
+            if (!is_null($type)) {
+                $books = Book::where('idTypeBook', $id)->get();
 
-            if(is_null($book)){
-                return redirect('/404');
-            }else{
-                $loancard = LoanCard::where('idBook', $book->isbn)->first();
-
-                if(!is_null($loancard)){
-                    $loancard->delete();
+                if (!is_null($books)) {
+                    foreach ($books as $key => $book) {
+                        $loancards = LoanCard::where('idBook', $book->isbn)->get();
+                        if (!is_null($loancards)) {
+                            foreach ($loancards as $key => $loancard) {
+                                $loancard->delete();
+                            }
+                        }
+                        $book->delete();
+                    }
                 }
-                $book->delete();
+                $type->delete();
             }
-            $type->delete();
+        } catch (\Throwable $th) {
+            return back()->withErrors("Xóa thể loại thất bại");
         }
 
         return back();

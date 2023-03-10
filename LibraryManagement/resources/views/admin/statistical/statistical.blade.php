@@ -38,15 +38,15 @@
 
                             <div class="row text-center">
                                 <div class="col-4">
-                                    <h5 class="mb-0">{{ $borrowedBook }}</h5>
+                                    <h5 class="mb-0">{{ $borrowedBookCount }}</h5>
                                     <p class="text-muted text-truncate">Đã cho mượn</p>
                                 </div>
                                 <div class="col-4">
-                                    <h5 class="mb-0">{{ $remainingBook }}</h5>
+                                    <h5 class="mb-0">{{ $remainingBookCount }}</h5>
                                     <p class="text-muted text-truncate">Còn lại</p>
                                 </div>
                                 <div class="col-4">
-                                    <h5 class="mb-0">{{ $borrowedBook + $remainingBook }}</h5>
+                                    <h5 class="mb-0">{{ $borrowedBookCount + $remainingBookCount }}</h5>
                                     <p class="text-muted text-truncate">Tổng</p>
                                 </div>
                             </div>
@@ -170,16 +170,18 @@
                 pointHoverBorderWidth: 2,
                 pointRadius: 1,
                 pointHitRadius: 10,
-                data: [65, 59, 80, 81, 56, 55, 40, 55, 30, 80]
+                data: [<?php foreach ($loanCardArray as $key => $loanCard) {
+                            echo $loanCard . ",";
+                        } ?>]
             }]
         },
         options: {
             scales: {
                 yAxes: [{
                     ticks: {
-                        max: 100,
-                        min: 20,
-                        stepSize: 20
+                        max: <?= ($loanCardCount) ? ($loanCardCount) + 1 : 1; ?>,
+                        min: 0,
+                        stepSize: <?= ($loanCardCount) ? round(($loanCardCount) / 2) : 1; ?>
                     }
                 }]
             },

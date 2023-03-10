@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app-staff')
 @section('title', 'Trang chủ')
 @section('content')
 <div class="main-content">
@@ -37,7 +37,7 @@
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-body py-5">
-                            <form method="POST" action="{{ route('save-password') }}">
+                            <form method="POST" action="{{ route('staff.save-password') }}">
                                 @csrf
                                 <div class="form-group row mb-4">
                                     <label for="old-pass" class="col-sm-3 col-form-label">Mật khẩu cũ</label>

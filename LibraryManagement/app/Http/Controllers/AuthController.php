@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 class AuthController extends Controller
 {
     private $user = null;
-    private $page = 'dashboard';
+    private $page = 'home';
 
     public function showLogin()
     {
@@ -51,9 +51,11 @@ class AuthController extends Controller
         return view('error.page404');
     }
 
-    public function changePassword()
+    public function changePassword(Request $request)
     {
-        return view('auth.change-password');
+        if($request->session()->get('loginUsername') == 'admin')
+            return view('admin.change-password');
+        return view('staff.change-password');
     }
 
     public function saveChangePassword(Request $request)

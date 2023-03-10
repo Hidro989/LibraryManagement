@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class AuthCheck
+class StaffCheck
 {
     /**
      * Handle an incoming request.
@@ -17,6 +17,9 @@ class AuthCheck
     {
         if(!$request->session()->has('loginUsername')) {
             return redirect()->route('login');
+        }
+        if($request->session()->get('loginUsername') == 'admin') {
+            return redirect()->route('dashboard');
         }
         return $next($request);
     }

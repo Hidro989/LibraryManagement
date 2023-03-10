@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use App\Models\LoanCard;
 use App\Models\Staffs;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
@@ -135,8 +136,20 @@ class AdminController extends Controller
     }
 
     public function statisticalAllBook() {
-        $borrowedBook = Book::where('status', 1)->count();
-        $remainingBook = Book::where('status', 0)->count();
-        return View::make('admin.statistical')->with(compact('borrowedBook'))->with(compact('remainingBook'));
+        $borrowedBookCount = Book::where('status', 1)->count();
+        $remainingBookCount = Book::where('status', 0)->count();
+
+        $loanCard = LoanCard::all();
+        $loanCardCount = $loanCard->count();
+        $loanCardArray = array_fill(0, 12, 0);
+        foreach ($loanCard as $key => $loan) {
+            $date = explode("-", $loan->dateStart);
+            $loanCardArray[(int)$date[1] - 1]++;
+        }
+        return View::make('admin.statistical.statistical')
+        ->with(compact('borrowedBookCount'))
+        ->with(compact('remainingBookCount'))
+        ->with(compact('loanCardArray'))
+        ->with(compact('loanCardCount'));
     }
 }
