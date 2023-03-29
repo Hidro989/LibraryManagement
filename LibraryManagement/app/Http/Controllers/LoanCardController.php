@@ -59,11 +59,17 @@ class LoanCardController extends Controller
             $book->save();
         }
 
+        $dateStart = date_create($request->input('dateStart'));
+        $dateEnd = date_create($request->input('dateEnd'));
+        if($dateStart > $dateEnd){
+            return back()->withInput()->withErrors("Ngày trả phải lớn hơn ngày mượn");
+        }
+
         $loancard = new LoanCard();
         $loancard->cmndReader = $request->input('reader');
         $loancard->idBook = $request->input('book');
-        $loancard->dateStart = date_create($request->input('dateStart'));
-        $loancard->dateEnd = date_create($request->input('dateEnd'));
+        $loancard->dateStart = $dateStart;
+        $loancard->dateEnd = $dateEnd;
         $loancard->cmndReader = $request->input('reader');
         $loancard->status = 0;
         $loancard->idStaff = 1;
