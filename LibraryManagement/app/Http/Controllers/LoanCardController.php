@@ -88,13 +88,14 @@ class LoanCardController extends Controller
             $lc->status = 0;
             $lc->idStaff = 1;
         }
-        
+        $str = null;
         try {
             //$loancard->save();
             $lc->save();
             return redirect()->route('loancard.index');
         } catch (\Throwable $th) {
-            return back()->withErrors("Tạo thẻ mượn không thành công");
+            //return back()->withErrors("Tạo thẻ mượn không thành công");
+            return back()->withErrors($str);
         }
     }
 
