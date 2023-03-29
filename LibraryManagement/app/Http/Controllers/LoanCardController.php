@@ -63,35 +63,21 @@ class LoanCardController extends Controller
         $dateEnd = date_create($request->input('dateEnd'));
         if($dateStart > $dateEnd){
             return back()->withInput()->withErrors("Ngày trả phải lớn hơn ngày mượn");
-        }else{
-            return back()->withInput()->withErrors("Ngày trả phải lớn hơn ngày mượn");
         }
 
-        // $loancard = new LoanCard();
-        // $loancard->cmndReader = $request->input('reader');
-        // $loancard->idBook = $request->input('book');
-        // $loancard->dateStart = $dateStart;
-        // $loancard->dateEnd = $dateEnd;
-        // $loancard->cmndReader = $request->input('reader');
-        // $loancard->status = 0;
-        // $loancard->idStaff = 1;
+        $loancard = new LoanCard();
+        $loancard->cmndReader = $request->input('reader');
+        $loancard->idBook = $request->input('book');
+        $loancard->dateStart = $dateStart;
+        $loancard->dateEnd = $dateEnd;
+        $loancard->cmndReader = $request->input('reader');
+        $loancard->status = 0;
+        $loancard->idStaff = 1;
 
-        $lc = new LoanCard();
-        if($lc){
-            $lc->cmndReader = $request->input('reader');
-        }else{
-            $lc->cmndReader = $request->input('reader');
-            $lc->idBook = $request->input('book');
-            $lc->dateStart = $dateStart;
-            $lc->dateEnd = $dateEnd;
-            $lc->cmndReader = $request->input('reader');
-            $lc->status = 0;
-            $lc->idStaff = 1;
-        }
+    
         
         try {
-            //$loancard->save();
-            $lc->save();
+            $loancard->save();
             return redirect()->route('loancard.index');
         } catch (\Throwable $th) {
             return back()->withErrors("Tạo thẻ mượn không thành công");
