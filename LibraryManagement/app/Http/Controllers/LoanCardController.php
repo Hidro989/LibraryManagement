@@ -63,6 +63,8 @@ class LoanCardController extends Controller
         $dateEnd = date_create($request->input('dateEnd'));
         if($dateStart > $dateEnd){
             return back()->withInput()->withErrors("Ngày trả phải lớn hơn ngày mượn");
+        }else{
+            return back()->withInput()->withErrors("Ngày trả phải lớn hơn ngày mượn");
         }
 
         $loancard = new LoanCard();
